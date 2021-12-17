@@ -5,7 +5,7 @@ numbers = [
 for i in numbers:
     if i!=918:
         if i%2==0:
-            print(i, end=',')
+            print(i, end=' ')
     else:
         print('Done.')
         break
