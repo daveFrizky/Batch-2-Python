@@ -11,6 +11,7 @@ if x >= 10 and x <= 15 and sunny:
 
 
 total_purchase = 1000
+var=10
 # if 'a' in 'bar':
 if 'aa' in 'bar':
     print('foo')
