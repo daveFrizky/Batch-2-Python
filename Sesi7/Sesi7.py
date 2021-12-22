@@ -1,7 +1,5 @@
-from flask import Flask
+from flask import Flask,render_template,request
 from markupsafe import escape
-from flask import request
-from flask import render_template
 
 app = Flask(__name__)
 
@@ -32,10 +30,10 @@ def login():
     return show_login_form()
 
 def do_login():
-    return "login sukses"
+    return f"login sukses dengan request {request.method}"
     
 def show_login_form():
-    return "login form"
+    return f"login form dengan request {request.method}"
 
 @app.route('/hello/')
 @app.route('/hello/<name>')
