@@ -1,7 +1,8 @@
 import os
 from config import db
 from models import Person
-
+from flask import current_app
+from flask_sqlalchemy import SQLAlchemy
 # Data to initialize database with
 PEOPLE = [
     {'fname': 'Raka', 'lname': 'Ardhi'},
@@ -15,6 +16,7 @@ if os.path.exists('people.db'):
 
 # Create the database
 db.create_all()
+
 
 # Iterate over the PEOPLE structure and populate the database
 for person in PEOPLE:

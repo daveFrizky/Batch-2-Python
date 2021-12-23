@@ -12,3 +12,4 @@ class PersonSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Person
         sqla_session = db.session    
+        load_instance=True

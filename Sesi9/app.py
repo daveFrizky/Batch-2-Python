@@ -1,12 +1,5 @@
-# import sqlite3
-
-# conn = sqlite3.connect('people.db')
-# cur = conn.cursor()
-# cur.execute('SELECT * FROM person ORDER BY lname')
-# people = cur.fetchall()
-# for person in people:
-#     print(f'{person[2]} {person[1]}')
-
+import sqlite3
+from flask_sqlalchemy import SQLAlchemy
 from flask import render_template
 
 # local modules
@@ -19,7 +12,6 @@ connex_app = config.connex_app
 # Read the swagger.yml file to configure the endpoints
 connex_app.add_api("swagger.yml")
 connex_app=connex_app.app
-
 # create a URL route in our application for "/"
 @connex_app.route("/")
 def home():
