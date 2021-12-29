@@ -44,46 +44,31 @@ def read_all():
 #         )
 
 
-# def create(person):
-#     """
-#     This function creates a new person in the people structure
-#     based on the passed in person data
-#     :param person:  person to create in people structure
-#     :return:        201 on success, 406 on person exists
-#     """
-#     fname = person.get("fname")
-#     lname = person.get("lname")
+def create(avocado):
+    """
+    This function creates a new person in the people structure
+    based on the passed in person data
+    :param person:  person to create in people structure
+    :return:        201 on success, 406 on person exists
+    """
+    # Can we insert this person?
+    if True:
 
-#     existing_person = (
-#         Person.query.filter(Person.fname == fname)
-#         .filter(Person.lname == lname)
-#         .one_or_none()
-#     )
+        # Create a person instance using the schema and the passed in person
+        schema = AvocadoSchema()
+        new_avocado = schema.load(avocado, session=db.session)
 
-#     # Can we insert this person?
-#     if existing_person is None:
+        # Add the person to the database
+        db.session.add(new_avocado)
+        db.session.commit()
 
-#         # Create a person instance using the schema and the passed in person
-#         schema = PersonSchema()
-#         new_person = schema.load(person, session=db.session)
+        # Serialize and return the newly created person in the response
+        data = schema.dump(new_avocado)
 
-#         # Add the person to the database
-#         db.session.add(new_person)
-#         db.session.commit()
+        return data, 201
 
-#         # Serialize and return the newly created person in the response
-#         data = schema.dump(new_person)
+    # Otherwise, nope, person exists already
 
-#         return data, 201
-
-#     # Otherwise, nope, person exists already
-#     else:
-#         abort(
-#             409,
-#             "Person {fname} {lname} exists already".format(
-#                 fname=fname, lname=lname
-#             ),
-#         )
 
 
 # def update(person_id, person):

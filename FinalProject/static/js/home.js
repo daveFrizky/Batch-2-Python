@@ -11,7 +11,7 @@ ns.model = (function() {
         'read': function() {
             let ajax_options = {
                 type: 'GET',
-                url: 'api/people',
+                url: 'api/directors',
                 accepts: 'application/json',
                 dataType: 'json'
             };
@@ -23,16 +23,20 @@ ns.model = (function() {
                 $event_pump.trigger('model_error', [xhr, textStatus, errorThrown]);
             })
         },
-        create: function(fname, lname) {
+        create: function(department, gender,id,uid,name) {
             let ajax_options = {
                 type: 'POST',
-                url: 'api/people',
+                url: 'api/directors',
                 accepts: 'application/json',
                 contentType: 'application/json',
                 dataType: 'json',
                 data: JSON.stringify({
-                    'fname': fname,
-                    'lname': lname
+                    "department":department,
+                    "gender": gender,
+                    "id": id,
+                    "name": name,
+                    "uid": uid
+                
                 })
             };
             $.ajax(ajax_options)
@@ -43,16 +47,19 @@ ns.model = (function() {
                 $event_pump.trigger('model_error', [xhr, textStatus, errorThrown]);
             })
         },
-        update: function(fname, lname) {
+        update: function(department, gender,id,uid,name) {
             let ajax_options = {
                 type: 'PUT',
-                url: 'api/people/' + lname,
+                url: 'api/directors/' + id,
                 accepts: 'application/json',
                 contentType: 'application/json',
                 dataType: 'json',
                 data: JSON.stringify({
-                    'fname': fname,
-                    'lname': lname
+                    "department":department,
+                    "gender": gender,
+                    "id": id,
+                    "name": name,
+                    "uid": uid
                 })
             };
             $.ajax(ajax_options)
@@ -63,10 +70,10 @@ ns.model = (function() {
                 $event_pump.trigger('model_error', [xhr, textStatus, errorThrown]);
             })
         },
-        'delete': function(lname) {
+        'delete': function(id) {
             let ajax_options = {
                 type: 'DELETE',
-                url: 'api/people/' + lname,
+                url: 'api/directors/' + id,
                 accepts: 'application/json',
                 contentType: 'plain/text'
             };
@@ -85,7 +92,8 @@ ns.model = (function() {
 ns.view = (function() {
     'use strict';
 
-    let $fname = $('#fname'),
+    let $person_id = $('#id'),
+        $fname = $('#fname'),
         $lname = $('#lname');
 
     // return the API
@@ -94,32 +102,29 @@ ns.view = (function() {
             $lname.val('');
             $fname.val('').focus();
         },
-        update_editor: function(fname, lname) {
+        update_editor: function(person_id,fname, lname) {
+            $person_id.val(person_id);
             $lname.val(lname);
             $fname.val(fname).focus();
         },
-        build_table: function(avocado) {
+        build_table: function(people) {
             let rows = ''
 
             // clear the table
             $('.people table > tbody').empty();
 
             // did we get a people array?
-            if (avocado) {
-                for (let i=0, l=avocado.length; i < l; i++) {
-                    rows += `<tr><td>${avocado[i].date}</td>
-                            <td>${avocado[i].avgprice}</td>
-                            <td>${avocado[i].totalvol}</td>
-                            <td>${avocado[i].avo_a}</td>
-                            <td>${avocado[i].avo_b}</td>
-                            <td>${avocado[i].avo_c}</td>
-                            <td>${avocado[i].type}</td>
-                            <td>${avocado[i].regionid}</td>
-                            </tr>`;
-                }
+            if (people) {
+                for (let i=0, l=people.length; i < l; i++) {
+                    rows += `<tr><td>${people[i].id}</td>
+                    <td>${people[i].name}</td>
+                    <td>${people[i].gender}</td>
+                    <td>${people[i].uid}</td>
+                    <td>${people[i].department}</td>
+                    </tr>`;
+        }
                 $('table > tbody').append(rows);
             }
-            console.log(avocado)
         },
         error: function(error_msg) {
             $('.error')
@@ -139,6 +144,7 @@ ns.controller = (function(m, v) {
     let model = m,
         view = v,
         $event_pump = $('body'),
+        $person_id = $('#person_id'),
         $fname = $('#fname'),
         $lname = $('#lname');
 
@@ -148,8 +154,8 @@ ns.controller = (function(m, v) {
     }, 100)
 
     // Validate input
-    function validate(fname, lname) {
-        return fname !== "" && lname !== "";
+    function validate(person_id,fname, lname) {
+        return person_id !== "" && fname !== "" && lname !== "";
     }
 
     // Create our event handlers
@@ -167,13 +173,14 @@ ns.controller = (function(m, v) {
     });
 
     $('#update').click(function(e) {
-        let fname = $fname.val(),
+        let person_id = $person_id.val(),
+            fname = $fname.val(),
             lname = $lname.val();
 
         e.preventDefault();
 
         if (validate(fname, lname)) {
-            model.update(fname, lname)
+            model.update(person_id, fname, lname)
         } else {
             alert('Problem with first or last name input');
         }
@@ -181,12 +188,12 @@ ns.controller = (function(m, v) {
     });
 
     $('#delete').click(function(e) {
-        let lname = $lname.val();
+        let person_id = $person_id.val();
 
         e.preventDefault();
 
-        if (validate('placeholder', lname)) {
-            model.delete(lname)
+        if (validate('placeholder', person_id)) {
+            model.delete(person_id)
         } else {
             alert('Problem with first or last name input');
         }
@@ -199,9 +206,14 @@ ns.controller = (function(m, v) {
 
     $('table > tbody').on('dblclick', 'tr', function(e) {
         let $target = $(e.target),
+            person_id,
             fname,
             lname;
 
+        person_id = $target
+            .parent()
+            .find('td.person_id')
+            .text();
         fname = $target
             .parent()
             .find('td.fname')
@@ -212,7 +224,7 @@ ns.controller = (function(m, v) {
             .find('td.lname')
             .text();
 
-        view.update_editor(fname, lname);
+        view.update_editor(person_id,fname, lname);
     });
 
     // Handle the model events

@@ -2,14 +2,15 @@ from config import db, ma
 
 class Avocado(db.Model):
     __tablename__ = 'avocado'
-    date = db.Column(db.String(32),index=True,primary_key=True)
+    # dumpKey = db.column(db.Integer)
+    date = db.Column(db.String(32),index=True)
     avgprice = db.Column(db.REAL)
     totalvol = db.Column(db.Integer)
-    # avo_a = db.Column(db.Integer)
-    # avo_b = db.Column(db.REAL)
-    # avo_c = db.Column(db.REAL)
-    # type = db.Column(db.Integer)
-    # region_id=db.Column(db.Integer)
+    avo_a = db.Column(db.Integer)
+    avo_b = db.Column(db.REAL)
+    avo_c = db.Column(db.REAL)
+    type = db.Column(db.Integer)
+    regionid = db.Column(db.Integer,  primary_key=True)
     
 
 class AvocadoSchema(ma.SQLAlchemyAutoSchema):
